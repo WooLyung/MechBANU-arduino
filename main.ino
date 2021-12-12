@@ -12,19 +12,32 @@ void setup()
     matrix.begin();
     matrix.show();
     matrix.setBrightness(20);
-
-    for (int i = 0; i < 192; i++)
-    {
-        matrix.setPixelColor(i, 100, 100, 0);
-        matrix.show();
-    }
 }
 
 void loop()
 {
     if (bluetooth.available())
     {
-        Serial.write(bluetooth.read());
+        char str[100];
+        bluetooth.readString().toCharArray(str, 100);
+        Serial.print(str);
+
+        if (!strcmp(str, "불 켜\n"))
+        {
+            for (int i = 0; i < 192; i++)
+            {
+                matrix.setPixelColor(i, 100, 100, 0);
+                matrix.show();
+            }
+        }
+        else if (!strcmp(str, "불 꺼\n"))
+        {
+            for (int i = 0; i < 192; i++)
+            {
+                matrix.setPixelColor(i, 0, 0, 0);
+                matrix.show();
+            }
+        }
     }
     if (Serial.available()) 
     {
