@@ -1,5 +1,6 @@
 #include <SoftwareSerial.h>
 #include <Adafruit_NeoPixel.h>
+#include "class/Banu.hpp"
 
 SoftwareSerial bluetooth(12, 13);
 Adafruit_NeoPixel matrix(192, 11, NEO_RGB + NEO_KHZ800);
@@ -18,29 +19,13 @@ void loop()
 {
     if (bluetooth.available())
     {
-        char str[100];
-        bluetooth.readString().toCharArray(str, 100);
-        Serial.print(str);
+        char buffer[100];
+        bluetooth.readBytes(buffer, 4);
 
-        if (!strcmp(str, "불 켜\n"))
-        {
-            for (int i = 0; i < 192; i++)
-            {
-                matrix.setPixelColor(i, 100, 100, 0);
-                matrix.show();
-            }
-        }
-        else if (!strcmp(str, "불 꺼\n"))
-        {
-            for (int i = 0; i < 192; i++)
-            {
-                matrix.setPixelColor(i, 0, 0, 0);
-                matrix.show();
-            }
-        }
-    }
-    if (Serial.available()) 
-    {
-        bluetooth.write(Serial.read());
+        Serial.println(Banu().yeah());
+        Serial.print(buffer[0]);
+        Serial.print(buffer[1] == 0);
+        Serial.print(buffer[2] == 0);
+        Serial.println(buffer[3] == 9);
     }
 }
