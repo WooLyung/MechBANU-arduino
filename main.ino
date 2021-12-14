@@ -2,15 +2,12 @@
 
 Banu banu;
 
-void setup()
+void setup() 
 {
     banu.setup();
 }
 
 void loop()
 {
-    banu.display->setColor(0, 255, 255, 0);
-    banu.display->refresh();
-
-    // banu.loop();
+    banu.loop();
 }

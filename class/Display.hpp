@@ -2,7 +2,7 @@
 #define DISPLAY_HPP
 
 #include <Adafruit_NeoPixel.h>
-#include "../utils/Pins.hpp"
+#include "../util/Pins.hpp"
 
 class Display
 {
@@ -29,7 +29,7 @@ void Display::setBrightness(int brightness)
 
 void Display::setColor(int pixel, int r, int g, int b)
 {
-    matrix.setPixelColor(pixel, r, g, b);
+    matrix.setPixelColor(pixel, g, r, b);
 }
 
 void Display::refresh()
