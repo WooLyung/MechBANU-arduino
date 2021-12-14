@@ -1,15 +1,25 @@
 #include <SoftwareSerial.h>
 #include "../utils/Pins.hpp"
 
+class Banu;
+
 class Bluetooth
 {
 private:
     SoftwareSerial bluetooth = SoftwareSerial(PIN_BLUETOOTH_TXD, PIN_BLUETOOTH_RXD);
+    Banu* banu;
 
 public:
+    Bluetooth(Banu*);
+
     void setup();
     void read();
 };
+
+Bluetooth::Bluetooth(Banu* banu)
+{
+    this->banu = banu;
+}
 
 void Bluetooth::setup()
 {
@@ -22,6 +32,7 @@ void Bluetooth::read()
     {
         byte buffer[1024];
         bluetooth.readBytes(buffer, 4);
+
         Serial.print(buffer[0]);
         Serial.print(buffer[1]);
         Serial.print(buffer[2]);
