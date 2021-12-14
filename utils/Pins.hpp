@@ -1,0 +1,3 @@
+#define PIN_BLUETOOTH_RXD 13
+#define PIN_BLUETOOTH_TXD 12
+#define PIN_DISPLAY 11
