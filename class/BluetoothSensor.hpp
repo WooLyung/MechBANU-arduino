@@ -141,7 +141,7 @@ void BluetoothSensor::read()
                 op_3();
         }
     }
-    else if (connectTime >= 60000)
+    else if (connectTime >= 30000 || connectTime < 0)
     {
         connectTime = 0;
         display->setConnected(false);
