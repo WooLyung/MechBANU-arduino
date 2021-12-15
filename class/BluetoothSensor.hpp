@@ -97,7 +97,8 @@ void BluetoothSensor::touch()
 
         if (touchPattern[0] == 4 && touchPattern[1] == 3 && touchPattern[2] == 2 && touchPattern[3] == 1)
         {
-            Serial.println("!");
+            byte a[4] = { 0x48, 0x05, 0x00, 0x00 };
+            bluetooth.write(a, 4);
         }
     }
 
