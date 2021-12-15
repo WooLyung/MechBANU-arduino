@@ -35,7 +35,7 @@ void Display::setup()
 
 void Display::setConnected(bool flag)
 {
-    if (!duration && flag != connected)
+    if (flag != connected)
     {
         connected = flag;
         setDefault();
@@ -83,19 +83,37 @@ void Display::update()
 
 void Display::setDefault()
 {
-    matrix.setBrightness(20);
+    matrix.setBrightness(10);
 
     if (connected)
     {
         for (int i = 0; i < 192; i++)
-            matrix.setPixelColor(i, 255, 0, 0);
-        matrix.show();
+            setColor(i, 0, 255, 0);
+        refresh();
     }
     else
     {
         for (int i = 0; i < 192; i++)
-            matrix.setPixelColor(i, 0, 0, 255);
-        matrix.show();
+            setColor(i, 0, 0, 0);
+
+        setColor(81, 100, 40, 255);
+        setColor(85, 20, 200, 255);
+        setColor(90, 80, 80, 255);
+        setColor(92, 40, 160, 255);
+        setColor(96, 120, 0, 255);
+        setColor(97, 100, 40, 255);
+        setColor(98, 80, 80, 255);
+        setColor(99, 60, 120, 255);
+        setColor(100, 40, 160, 255);
+        setColor(101, 20, 200, 255);
+        setColor(102, 0, 240, 255);
+        setColor(105, 100, 40, 255);
+        setColor(107, 60, 120, 255);
+        setColor(109, 20, 200, 255);
+        setColor(114, 60, 80, 255);
+        setColor(116, 20, 160, 255);
+
+        refresh();
     }
 }
 

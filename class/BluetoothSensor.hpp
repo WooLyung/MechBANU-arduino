@@ -141,7 +141,7 @@ void BluetoothSensor::read()
                 op_3();
         }
     }
-    else if (connectTime >= 30000)
+    else if (connectTime >= 60000)
     {
         connectTime = 0;
         display->setConnected(false);
@@ -187,21 +187,21 @@ void BluetoothSensor::op_3()
 
     int code = buffer[0];
     
-    if (code == 1)
+    if (code == 0)
     {
         float t = temp.readTemperature();
         byte* p = (byte*) &t;
         byte buffer[9] = { 0x48, 0x04, 0x00, 0x04, 0x00, p[0], p[1], p[2], p[3] };
         bluetooth.write(buffer, 9);
     }
-    else if (code == 2)
+    else if (code == 1)
     {
         float h = temp.readHumidity();
         byte* p = (byte*) &h;
         byte buffer[9] = { 0x48, 0x04, 0x00, 0x04, 0x01, p[0], p[1], p[2], p[3] };
         bluetooth.write(buffer, 9);     
     }
-    else if (code == 3)
+    else if (code == 2)
     {
         unsigned long pulse = pulseIn(PIN_DUST, LOW, 100000);
         float d = pulse2ugm3(pulse);
