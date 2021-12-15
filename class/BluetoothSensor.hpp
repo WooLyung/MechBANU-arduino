@@ -1,4 +1,5 @@
 #include <SoftwareSerial.h>
+#include <DHT.h>
 #include "Display.hpp"
 #include "../util/Pins.hpp"
 
@@ -6,6 +7,7 @@ class BluetoothSensor
 {
 private:
     SoftwareSerial bluetooth = SoftwareSerial(PIN_BLUETOOTH_TXD, PIN_BLUETOOTH_RXD);
+    DHT temp = DHT(PIN_TEMP, DHT22);
     Display* display;
 
 public:
@@ -34,6 +36,13 @@ void BluetoothSensor::setup()
 
 void BluetoothSensor::read()
 {
+    float a = temp.readTemperature();
+    float b = temp.readHumidity();
+
+    Serial.println("--");
+    Serial.println(a);
+    Serial.println(b);
+
     if (bluetooth.available())
     {
         byte buffer[4];

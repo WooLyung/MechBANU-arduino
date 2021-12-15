@@ -1,3 +1,4 @@
+#define PIN_TEMP 2
 #define PIN_TOUCH1 4
 #define PIN_TOUCH2 5
 #define PIN_TOUCH3 6
