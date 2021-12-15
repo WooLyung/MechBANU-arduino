@@ -17,10 +17,13 @@ private:
 
     unsigned long pre = millis();
     int connectTime = 0;
+    int touchPattern[4] = { -1, -1, -1, -1 };
+    bool touchFlag[4] = { false, false, false, false };
 
 public:
     BluetoothSensor(Display*, MoodLamp*);
 
+    void touch();
     void setup();
     void read();
 
@@ -58,6 +61,57 @@ float BluetoothSensor::pulse2ugm3(unsigned long pulse)
     return value;
 }
 
+void BluetoothSensor::touch()
+{
+    int code = -1;
+
+    // enter
+    if (digitalRead(PIN_TOUCH1) && !touchFlag[0])
+    {
+        touchFlag[0] = true;
+        code = 1;
+    }
+    if (digitalRead(PIN_TOUCH2) && !touchFlag[1])
+    {
+        touchFlag[1] = true;
+        code = 2;
+    }
+    if (digitalRead(PIN_TOUCH3) && !touchFlag[2])
+    {
+        touchFlag[2] = true;
+        code = 3;
+    }
+    if (digitalRead(PIN_TOUCH4) && !touchFlag[3])
+    {
+        touchFlag[3] = true;
+        code = 4;
+    }
+
+    // pattern
+    if (code != -1)
+    {
+        touchPattern[3] = touchPattern[2];
+        touchPattern[2] = touchPattern[1];
+        touchPattern[1] = touchPattern[0];
+        touchPattern[0] = code;
+
+        if (touchPattern[0] == 4 && touchPattern[1] == 3 && touchPattern[2] == 2 && touchPattern[3] == 1)
+        {
+            Serial.println("!");
+        }
+    }
+
+    // exit
+    if (!digitalRead(PIN_TOUCH1))
+        touchFlag[0] = false;
+    if (!digitalRead(PIN_TOUCH2))
+        touchFlag[1] = false;
+    if (!digitalRead(PIN_TOUCH3))
+        touchFlag[2] = false;
+    if (!digitalRead(PIN_TOUCH4))
+        touchFlag[3] = false;
+}
+
 void BluetoothSensor::read()
 {
     connectTime += millis() - pre;
@@ -84,7 +138,7 @@ void BluetoothSensor::read()
                 op_3();
         }
     }
-    else if (connectTime >= 20000)
+    else if (connectTime >= 30000)
     {
         display->setConnected(false);
     }
@@ -113,10 +167,36 @@ void BluetoothSensor::op_1()
 
 void BluetoothSensor::op_2()
 {
+    byte buffer[91];
+    bluetooth.readBytes(buffer, 91);
+
+    int brightness = buffer[0];
+
+    moodLamp->setBrightness(brightness);
+    for (int i = 0; i < 30; i++)
+        moodLamp->setColor(i, buffer[i * 3 + 1], buffer[i * 3 + 2], buffer[i * 3 + 3]);
+    moodLamp->refresh();
 }
 
 void BluetoothSensor::op_3()
 {
+    byte buffer[1];
+    bluetooth.readBytes(buffer, 1);
+
+    int type = buffer[0];
+    
+    if (type == 0)
+    {
+        // 현재 방 온도 응답
+    }
+    else if (type == 1)
+    {
+        // 현재 방 습도 응답
+    }
+    else if (type == 2)
+    {
+        // 현재 방 미세먼지 응답
+    }
 }
 
 #endif

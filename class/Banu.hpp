@@ -44,6 +44,7 @@ void Banu::setup()
 
 void Banu::loop()
 {
+    bluetoothSensor->touch();
     bluetoothSensor->read();
     display->update();
 }
