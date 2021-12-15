@@ -1,4 +1,4 @@
-#include "Bluetooth.hpp"
+#include "BluetoothSensor.hpp"
 #include "Display.hpp"
 #include "MoodLamp.hpp"
 #include "Sensor.hpp"
@@ -6,7 +6,7 @@
 class Banu
 {
 private:
-    Bluetooth* bluetooth;
+    BluetoothSensor* bluetoothSensor;
     Display* display;
     MoodLamp* moodLmap;
     Sensor* sensor;
@@ -22,23 +22,23 @@ public:
 Banu::Banu()
 {
     display = new Display();
-    bluetooth = new Bluetooth(display);
+    bluetoothSensor = new BluetoothSensor(display);
 }
 
 Banu::~Banu()
 {
-    delete bluetooth;
+    delete bluetoothSensor;
     delete display;
 }
 
 void Banu::setup()
 {
     Serial.begin(9600);
-    bluetooth->setup();
+    bluetoothSensor->setup();
     display->setup();
 }
 
 void Banu::loop()
 {
-    bluetooth->read();
+    bluetoothSensor->read();
 }

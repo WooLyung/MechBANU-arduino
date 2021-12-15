@@ -1,3 +1,7 @@
-#define PIN_BLUETOOTH_RXD 13
-#define PIN_BLUETOOTH_TXD 12
+#define PIN_TOUCH1 4
+#define PIN_TOUCH2 5
+#define PIN_TOUCH3 6
+#define PIN_TOUCH4 7
 #define PIN_DISPLAY 11
+#define PIN_BLUETOOTH_TXD 12
+#define PIN_BLUETOOTH_RXD 13

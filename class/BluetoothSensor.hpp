@@ -2,14 +2,14 @@
 #include "Display.hpp"
 #include "../util/Pins.hpp"
 
-class Bluetooth
+class BluetoothSensor
 {
 private:
     SoftwareSerial bluetooth = SoftwareSerial(PIN_BLUETOOTH_TXD, PIN_BLUETOOTH_RXD);
     Display* display;
 
 public:
-    Bluetooth(Display*);
+    BluetoothSensor(Display*);
 
     void setup();
     void read();
@@ -18,17 +18,21 @@ private:
     void op_1();
 };
 
-Bluetooth::Bluetooth(Display* display)
+BluetoothSensor::BluetoothSensor(Display* display)
 {
     this->display = display;
 }
 
-void Bluetooth::setup()
+void BluetoothSensor::setup()
 {
+    pinMode(PIN_TOUCH1, INPUT);
+    pinMode(PIN_TOUCH2, INPUT);
+    pinMode(PIN_TOUCH3, INPUT);
+    pinMode(PIN_TOUCH4, INPUT);
     bluetooth.begin(9600);
 }
 
-void Bluetooth::read()
+void BluetoothSensor::read()
 {
     if (bluetooth.available())
     {
@@ -44,7 +48,7 @@ void Bluetooth::read()
     }
 }
 
-void Bluetooth::op_1()
+void BluetoothSensor::op_1()
 {
     byte buffer[578];
     bluetooth.readBytes(buffer, 578);
