@@ -48,9 +48,6 @@ float BluetoothSensor::pulse2ugm3(unsigned long pulse)
 
 void BluetoothSensor::read()
 {
-    unsigned long pulse = pulseIn(PIN_DUST, LOW, 20000);
-    Serial.println(pulse2ugm3(pulse));
-
     if (bluetooth.available())
     {
         byte buffer[4];
