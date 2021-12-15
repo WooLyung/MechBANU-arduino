@@ -88,7 +88,24 @@ void Display::setDefault()
     if (connected)
     {
         for (int i = 0; i < 192; i++)
-            setColor(i, 0, 255, 0);
+            setColor(i, 0, 0, 0);
+
+        for (int i = 0; i < 6; i++)
+        {
+            setColor(49 + i, 255 - i * 30, 255, i * 30);
+            setColor(57 + i, 255 - i * 30, 255, i * 30);
+            setColor(129 + i, 255 - i * 30, 255, i * 30);
+            setColor(137 + i, 255 - i * 30, 255, i * 30);
+
+            if (i != 0 && i != 5)
+            {
+                setColor(41 + i, 255 - i * 30, 255, i * 30);
+                setColor(65 + i, 255 - i * 30, 255, i * 30);
+                setColor(121 + i, 255 - i * 30, 255, i * 30);
+                setColor(145 + i, 255 - i * 30, 255, i * 30);
+            }
+        }
+
         refresh();
     }
     else
