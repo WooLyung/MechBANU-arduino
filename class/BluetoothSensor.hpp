@@ -1,6 +1,10 @@
+#ifndef BLUETOOTHSENSOR_HPP
+#define BLUETOOTHSENSOR_HPP
+
 #include <SoftwareSerial.h>
 #include <DHT.h>
 #include "Display.hpp"
+#include "MoodLamp.hpp"
 #include "../util/Pins.hpp"
 
 class BluetoothSensor
@@ -9,21 +13,29 @@ private:
     SoftwareSerial bluetooth = SoftwareSerial(PIN_BLUETOOTH_TXD, PIN_BLUETOOTH_RXD);
     DHT temp = DHT(PIN_TEMP, DHT22);
     Display* display;
+    MoodLamp* moodLamp;
+
+    unsigned long pre = millis();
+    int connectTime = 0;
 
 public:
-    BluetoothSensor(Display*);
+    BluetoothSensor(Display*, MoodLamp*);
 
     void setup();
     void read();
 
 private:
     float pulse2ugm3(unsigned long);
+    void op_0();
     void op_1();
+    void op_2();
+    void op_3();
 };
 
-BluetoothSensor::BluetoothSensor(Display* display)
+BluetoothSensor::BluetoothSensor(Display* display, MoodLamp* MoodLamp)
 {
     this->display = display;
+    this->moodLamp = moodLamp;
 }
 
 void BluetoothSensor::setup()
@@ -48,6 +60,9 @@ float BluetoothSensor::pulse2ugm3(unsigned long pulse)
 
 void BluetoothSensor::read()
 {
+    connectTime += millis() - pre;
+    pre = millis();
+
     if (bluetooth.available())
     {
         byte buffer[4];
@@ -57,9 +72,28 @@ void BluetoothSensor::read()
         int op = buffer[1];
         size_t len = buffer[2] * 16 + buffer[3];
 
-        if (op == 0x01)
-            op_1();
+        if (H == 'H')
+        {
+            if (op == 0x00) // ping
+                op_0();
+            else if (op == 0x01) // display
+                op_1();
+            else if (op == 0x02) // mood
+                op_2();
+            else if (op == 0x03) // request
+                op_3();
+        }
     }
+    else if (connectTime >= 20000)
+    {
+        display->setConnected(false);
+    }
+}
+
+void BluetoothSensor::op_0()
+{
+    connectTime = 0;
+    display->setConnected(true);
 }
 
 void BluetoothSensor::op_1()
@@ -70,10 +104,19 @@ void BluetoothSensor::op_1()
     int duration = buffer[0];
     int brightness = buffer[1];
 
+    display->setDuration(duration);
     display->setBrightness(brightness);
     for (int i = 0; i < 192; i++)
-    {
         display->setColor(i, buffer[i * 3 + 2], buffer[i * 3 + 3], buffer[i * 3 + 4]);
-    }
     display->refresh();
 }
+
+void BluetoothSensor::op_2()
+{
+}
+
+void BluetoothSensor::op_3()
+{
+}
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef BANU_HPP
+#define BANU_HPP
+
 #include "BluetoothSensor.hpp"
 #include "Display.hpp"
 #include "MoodLamp.hpp"
@@ -21,7 +24,7 @@ Banu::Banu()
 {
     display = new Display();
     moodLamp = new MoodLamp();
-    bluetoothSensor = new BluetoothSensor(display);
+    bluetoothSensor = new BluetoothSensor(display, moodLamp);
 }
 
 Banu::~Banu()
@@ -42,4 +45,7 @@ void Banu::setup()
 void Banu::loop()
 {
     bluetoothSensor->read();
+    display->update();
 }
+
+#endif
