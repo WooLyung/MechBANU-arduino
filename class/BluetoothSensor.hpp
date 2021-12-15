@@ -127,6 +127,8 @@ void BluetoothSensor::read()
         int op = buffer[1];
         size_t len = buffer[2] * 16 + buffer[3];
 
+        connectTime = 0;
+        display->setConnected(true);
         if (H == 'H')
         {
             if (op == 0x00) // ping
@@ -141,14 +143,13 @@ void BluetoothSensor::read()
     }
     else if (connectTime >= 30000)
     {
+        connectTime = 0;
         display->setConnected(false);
     }
 }
 
 void BluetoothSensor::op_0()
 {
-    connectTime = 0;
-    display->setConnected(true);
 }
 
 void BluetoothSensor::op_1()
@@ -184,19 +185,29 @@ void BluetoothSensor::op_3()
     byte buffer[1];
     bluetooth.readBytes(buffer, 1);
 
-    int type = buffer[0];
+    int code = buffer[0];
     
-    if (type == 0)
+    if (code == 1)
     {
-        // 현재 방 온도 응답
+        float t = temp.readTemperature();
+        byte* p = (byte*) &t;
+        byte buffer[9] = { 0x48, 0x04, 0x00, 0x04, 0x00, p[0], p[1], p[2], p[3] };
+        bluetooth.write(buffer, 9);
     }
-    else if (type == 1)
+    else if (code == 2)
     {
-        // 현재 방 습도 응답
+        float h = temp.readHumidity();
+        byte* p = (byte*) &h;
+        byte buffer[9] = { 0x48, 0x04, 0x00, 0x04, 0x01, p[0], p[1], p[2], p[3] };
+        bluetooth.write(buffer, 9);     
     }
-    else if (type == 2)
+    else if (code == 3)
     {
-        // 현재 방 미세먼지 응답
+        unsigned long pulse = pulseIn(PIN_DUST, LOW, 100000);
+        float d = pulse2ugm3(pulse);
+        byte* p = (byte*) &d;
+        byte buffer[9] = { 0x48, 0x04, 0x00, 0x04, 0x02, p[0], p[1], p[2], p[3] };
+        bluetooth.write(buffer, 9);
     }
 }
 
