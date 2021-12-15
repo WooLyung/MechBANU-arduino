@@ -17,6 +17,7 @@ public:
     void read();
 
 private:
+    float pulse2ugm3(unsigned long);
     void op_1();
 };
 
@@ -31,17 +32,24 @@ void BluetoothSensor::setup()
     pinMode(PIN_TOUCH2, INPUT);
     pinMode(PIN_TOUCH3, INPUT);
     pinMode(PIN_TOUCH4, INPUT);
+    pinMode(PIN_TEMP, INPUT);
+    pinMode(PIN_DUST, INPUT);
+
     bluetooth.begin(9600);
+}
+
+float BluetoothSensor::pulse2ugm3(unsigned long pulse)
+{
+    float value = (pulse - 540) / 14.0f;
+    if (value > 300.0f)
+        value = 0.0f;
+    return value;
 }
 
 void BluetoothSensor::read()
 {
-    float a = temp.readTemperature();
-    float b = temp.readHumidity();
-
-    Serial.println("--");
-    Serial.println(a);
-    Serial.println(b);
+    unsigned long pulse = pulseIn(PIN_DUST, LOW, 20000);
+    Serial.println(pulse2ugm3(pulse));
 
     if (bluetooth.available())
     {

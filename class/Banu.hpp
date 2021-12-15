@@ -1,7 +1,6 @@
 #include "BluetoothSensor.hpp"
 #include "Display.hpp"
 #include "MoodLamp.hpp"
-#include "Sensor.hpp"
 
 class Banu
 {
@@ -9,7 +8,6 @@ private:
     BluetoothSensor* bluetoothSensor;
     Display* display;
     MoodLamp* moodLmap;
-    Sensor* sensor;
 
 public:
     Banu();
