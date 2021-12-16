@@ -203,7 +203,9 @@ void BluetoothSensor::op_3()
     }
     else if (code == 2)
     {
-        unsigned long pulse = pulseIn(PIN_DUST, LOW, 100000);
+        unsigned long pulse = 0;
+        while (pulse)
+            unsigned long pulse = pulseIn(PIN_DUST, LOW, 100000);
         float d = pulse2ugm3(pulse);
         byte* p = (byte*) &d;
         byte buffer[9] = { 0x48, 0x04, 0x00, 0x04, 0x02, p[0], p[1], p[2], p[3] };
